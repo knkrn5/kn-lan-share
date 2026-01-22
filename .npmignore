@@ -1,0 +1,16 @@
+#images
+imgs/
+
+#video
+vids/
+*.mp4
+*.mkv
+
+#folders
+node_modules/
+src/
+
+#files
+test.*
+tsconfig.json
+.gitignore

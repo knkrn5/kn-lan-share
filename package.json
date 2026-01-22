@@ -1,0 +1,30 @@
+{
+  "name": "kn-lan-share",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/server.js",
+  "description": "A command-line http server",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc && node -e \"require('fs').cpSync('src/public', 'dist/public', {recursive:true})\"",
+    "preview": "node dist/server.js"
+  },
+  "bin": {
+    "kls": "./dist/server.js"
+  },
+  "keywords": [
+    "cli",
+    "http-server"
+  ],
+  "author": "knkrn5",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "@types/qrcode-terminal": "^0.12.2",
+    "tsx": "^4.21.0"
+  },
+  "dependencies": {
+    "qrcode-terminal": "^0.12.0"
+  }
+}

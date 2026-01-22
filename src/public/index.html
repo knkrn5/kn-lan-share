@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/_css/style.css" />
+    <title>Index</title>
+  </head>
+  <body>
+    <!-- All notification -->
+    <p id="notification">notification</p>
+
+    <!-- File downloads -->
+    <div id="fileDownload">
+      <h1>Files in Directory: - ${DownloadFolder}</h1>
+
+      <div id="dirs">
+        <ol>
+          ${DynamicHTML}
+        </ol>
+      </div>
+    </div>
+
+    <!-- File uploads -->
+    <div id="fileUpload">
+      <h1>Files uploads Path: - ${UploadFolder}</h1>
+
+      <input title="upload files" type="file" id="fileInput" />
+
+      <button type="button" id="uploadButton">⬆️Upload</button>
+
+      <div id="progress">
+        <progress id="uploadProgressBar" value="0" max="100"></progress>
+        <p id="progressPercent">0%</p>
+      </div>
+    </div>
+
+    <script src="/_js/script.js" type="module"></script>
+    <script src="/_js/upload.js" type="module"></script>
+  </body>
+</html>

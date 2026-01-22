@@ -1,0 +1,71 @@
+html {
+  /* background: #5a6729; */
+}
+
+/* notification styling */
+#notification {
+  position: fixed;
+  display: none;
+  right: 10px;
+  padding: 10px;
+  border: 1px solid;
+  width: fit-content;
+  border-radius: 30%;
+  background-color: bisque;
+  /* animation: slideInFromRight 0.5s ease-in-out; */
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* file uploading styling */
+#fileUpload {
+  margin-top: 50px;
+}
+
+/* fileInput styling */
+#fileInput {
+  width: fit-content;
+  cursor: pointer;
+}
+
+/* uploadButton styling */
+#uploadButton {
+  cursor: pointer;
+}
+
+#uploadButton:hover {
+  border-radius: 5px;
+}
+
+/* progress div styling */
+#progress {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  gap: 10px;
+}
+
+/* Progress bar styling */
+#uploadProgressBar {
+  display: block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#progressPercent {
+  font-weight: bold;
+}
+
+/* custom dynamic element styling  */
+#customDynamicElement {
+  background: green;
+  margin-top: 20px;
+}
