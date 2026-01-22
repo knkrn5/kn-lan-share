@@ -8,10 +8,7 @@ vids/
 
 #folders
 node_modules/
-src/
+dist/
 
 #files
 test.*
-tsconfig.json
-.gitignore
-updates.md

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/server.js",
-  "description": "A command-line http server",
+  "description": "Lightweight HTTP server for local file sharing across your network with QR code access, upload/download capabilities, and smart network detection",
   "scripts": {
     "start": "node src/server.js",
     "dev": "tsx watch src/server.ts",
@@ -14,11 +14,34 @@
     "kls": "./dist/server.js"
   },
   "keywords": [
-    "cli",
-    "http-server"
+    "kn lan share",
+    "cli lan share",
+    "http server",
+    "file transfer",
+    "lan share",
+    "file sharing",
+    "file transfer",
+    "network share",
+    "static server",
+    "file upload",
+    "file download",
+    "local server"
   ],
-  "author": "knkrn5",
+  "author": {
+    "name": "knkrn5"
+  },
+  "homepage": "https://github.com/knkrn5/kn-lan-share#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knkrn5/kn-lan-share.git"
+  },
+  "bugs": {
+    "url": "https://github.com/knkrn5/kn-lan-share/issues"
+  },
   "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "devDependencies": {
     "@types/node": "^25.0.9",
     "@types/qrcode-terminal": "^0.12.2",

@@ -1,89 +1,193 @@
-# kn-http-server
+# KN-Lan-Share
 
-A lightweight, zero-dependency command-line HTTP server for serving static files and directories. It provides a simple interface for directory listings, file previews, and downloads.
+> A lightweight, feature-rich command-line HTTP server for local file sharing and transfer across your network.
 
-## Features
+[![npm version](https://img.shields.io/npm/v/kn-lan-share.svg)](https://www.npmjs.com/package/kn-lan-share)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
-- **Static File Serving:** Instantly serves files from the current directory.
-- **Directory Listing:** Auto-generated HTML directory listings with intuitive navigation.
-- **Preview & Download:** Built-in links to preview (👁️) or download (⬇️) files directly from the browser.
-- **Customizable:** Configure port, binding address, and stream high-water mark via CLI flags.
-- **Wide MIME Support:** Comprehensive support for text, images, audio, video, and application file types.
-- **Zero Dependencies:** Built using only native Node.js modules.
-
-## Installation
-
-### Globally via npm
-
-You can install the package globally to use it as a command-line tool anywhere on your system.
+## 🚀 Quick Start
 
 ```bash
-npm install -g kn-http-server
+# Install globally
+npm install -g kn-lan-share
+
+# Start the server
+kls
 ```
 
-### Run via npx
+That's it! Your file server is now running and accessible from any device on your local network.
 
-Alternatively, you can run it without installing using `npx`:
+## 📋 Table of Contents
+
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Command-Line Options](#-command-line-options)
+- [Security Considerations](#-security-considerations)
+- [Examples](#-examples)
+- [Development](#-development)
+- [License](#-license)
+
+## 📦 Installation
+
+### Global Installation (Recommended)
 
 ```bash
-npx kn-http-server [options]
+npm install -g kn-lan-share
 ```
 
-## Usage
-
-Navigate to the directory you want to serve and run:
+### Local Development
 
 ```bash
-kn-http-server
+# Clone the repository
+git clone <repository-url>
+cd kn-lan-share
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run the server
+npm start
 ```
 
-By default, the server listens on `0.0.0.0:3000`.
+## 🎯 Usage
 
-### Command Line Options
+### Basic Usage
 
-You can customize the server behavior using the following flags:
-
-| Flag  | Description                                      | Default     | Example                  |
-| :---- | :----------------------------------------------- | :---------- | :----------------------- |
-| `-p`  | **Port**: The port number to listen on.          | `3000`      | `kn-http-server -p 8080` |
-| `-a`  | **Address**: The IP address to bind to.          | `0.0.0.0`   | `kn-http-server -a 127.0.0.1` |
-| `-hw` | **HighWaterMark**: Stream buffer size in bytes.  | Node Default| `kn-http-server -hw 65536` |
-
-### Examples
-
-**Start on a specific port:**
 ```bash
-kn-http-server -p 8080
+# Start server on default port (3000)
+kls
+
+# The server will display:
+# - Server host address
+# - Active network interface IP
+# - Access URL for other devices
 ```
 
-**Bind to localhost only:**
+### With Custom Port
+
 ```bash
-kn-http-server -a 127.0.0.1
+kls -p 8080
 ```
 
-**Set custom stream buffer size (HighWaterMark):**
+### With Custom IP Binding
+
 ```bash
-kn-http-server -hw 64000
+kls -a 192.168.1.100
 ```
 
-## Development
+### Enable File Uploads
 
-If you want to contribute or modify the server code:
+```bash
+kls -up true
+```
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd http-server
-    ```
+### Show QR Code
 
-2.  **Start the server locally:**
-    ```bash
-    node server.js
-    # OR with options
-    node server.js -p 4000
-    ```
+```bash
+kls -qr
+```
 
-## License
+### Combined Options
 
-ISC
+```bash
+kls -p 8080 -up true -qr
+```
 
+## 🎛️ Command-Line Options
+
+| Flag                | Description                                         | Default | Example                |
+| ------------------- | --------------------------------------------------- | ------- | ---------------------- |
+| `-p <port>`         | Custom port number                                  | 3000    | `kls -p 8080`          |
+| `-a <address>`      | Bind to specific IP address                         | 0.0.0.0 | `kls -a 192.168.1.100` |
+| `-hw <bytes>`       | High water mark for streams (1 to 1073741824 bytes) | Default | `kls -hw 65536`        |
+| `-qr`               | Display QR code in terminal                         | false   | `kls -qr`              |
+| `-up <true\|false>` | Enable/disable file uploads                         | false   | `kls -up true`         |
+
+## 🔒 Security Considerations
+
+### Upload Protection
+
+By default, file uploads are **disabled** to protect your system from unauthorized file writes. To enable uploads:
+
+```bash
+kls -up true
+```
+
+### Network Exposure
+
+The server binds to `0.0.0.0` by default, making it accessible from any device on your network. To restrict access:
+
+```bash
+# Bind to localhost only
+kls -a 127.0.0.1
+
+# Bind to specific network interface
+kls -a 192.168.1.100
+```
+
+### Recommended Practices
+
+- Only enable uploads (`-up true`) when you need to receive files
+- Use on trusted networks only
+- Monitor the terminal for access logs
+- Stop the server when not in use
+
+## 📖 Examples
+
+### Example 1: Personal File Server
+
+```bash
+# Start server with QR code for easy mobile access
+kls -qr
+```
+
+Scan the QR code with your phone to instantly access files!
+
+### Example 2: Team File Sharing with Uploads
+
+```bash
+# Start on custom port with uploads enabled
+kls -p 3000 -up true
+```
+
+Share the URL with your team to both download and upload files.
+
+### Example 3: Optimized Streaming
+
+```bash
+# Start with custom buffer size for large file transfers
+kls -hw 131072
+```
+
+Adjust the high water mark for optimal performance with large files.
+
+### Example 4: Development Server
+
+```bash
+# Bind to localhost only for local testing
+kls -a 127.0.0.1 -p 3000
+```
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+## 📄 License
+
+ISC License - See LICENSE file for details
+
+## 👨‍💻 Author
+
+**knkrn5**
+
+## 🙏 Acknowledgments
+
+- Built with Node.js native modules for zero-dependency runtime
+- Uses `qrcode-terminal` for QR code generation
+
+---
+
+**Made with ❤️ for easy local file sharing**
