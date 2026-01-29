@@ -1,6 +1,7 @@
 # **Future Updates**
 
 > include -h for help menu
+> path traversal vulnerability fix
 
 ## server
 
@@ -11,6 +12,14 @@
 4. NIC detection improvements for better accuracy across different OS and ipv6
 5. add support for HTTPS with self-signed certificates
 6. ffmpeg
+7. solver overwriting problem
+8. change -up true to just -upload
+9. add client side video forwarding
+10. file upload on a progress disable upload button
+11. incase of video the forbidden msg is only comming after 100% progress fix this
+12. add clipboard text sharing
+13. add drag and drop file upload support
+14. hide directory download
 
 ## client
 

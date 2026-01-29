@@ -9,6 +9,7 @@ vids/
 #folders
 node_modules/
 src/
+.vscode/
 
 #files
 test.*

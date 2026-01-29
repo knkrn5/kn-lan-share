@@ -5,7 +5,7 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import { mime } from "./utils/mime.js";
 import { createApath } from "./utils/dirpath.js";
 import { argsHandler } from "./utils/argshandler.js";
-import { createWriteStream } from "node:fs";
+import { createWriteStream, statSync } from "node:fs";
 const server = http.createServer();
 import { getActiveInterface } from "./utils/nic.js";
 import qrcode from "qrcode-terminal";
@@ -46,10 +46,8 @@ argsHandler("-qr", () => {
   showQRCode = true;
 })
 
-argsHandler("-up", (uploadFlag) => {
-  if (uploadFlag === "true") {
-    isUploadAllowed = true;
-  }
+argsHandler("-up", () => {
+  isUploadAllowed = true;
 });
 
 server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
@@ -60,28 +58,28 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
 
   if (req.method === "GET") {
     if (url == "/favicon.ico") {
-      const favicon = await readFile(createApath("../", "public", "favicon.ico"));
+      const favicon = await readFile(createApath("../", "../", "public", "favicon.ico"));
       res.setHeader("Content-Type", "image/x-icon");
       return res.end(favicon);
       //   console.clear();
     }
 
     if (url.startsWith("/_js/")) {
-      const [, scriptName] = url.split("/_js/");
-      if (!scriptName) {
-        res.end(`${scriptName} not found`);
+      const [, scriptFileName] = url.split("/_js/");
+      if (!scriptFileName) {
+        res.end(`${scriptFileName} not found`);
         return;
       }
-      const scriptContent = await readFile(createApath("../", "public", scriptName));
+      const scriptContent = await readFile(createApath("../", "../", "public", scriptFileName));
       res.setHeader("Content-Type", "text/javascript");
       return res.end(scriptContent);
     } else if (url.startsWith("/_css/")) {
-      const [, cssName] = url.split("/_css/");
-      if (!cssName) {
-        res.end(`${cssName} not found`);
+      const [, cssFileName] = url.split("/_css/");
+      if (!cssFileName) {
+        res.end(`${cssFileName} not found`);
         return;
       }
-      const cssContent = await readFile(createApath("../", "public", cssName));
+      const cssContent = await readFile(createApath("../", "../", "public", cssFileName));
       res.setHeader("Content-Type", "text/css");
       return res.end(cssContent);
     }
@@ -92,16 +90,17 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
       const contentType = mime(url);
 
       if (stat.isDirectory()) {
-        console.log(createApath("../", "public", "index.html"))
+        // console.log(createApath("../", "../", "public", "index.html"))
         const htmlContent = await readFile(
-          createApath("../", "public", "index.html"),
+          createApath("../", "../", "public", "index.html"),
         );
         const dirsList: string[] = await readdir(`.${url}`);
         let DynamicHTML = "";
         let DownloadFolder = url;
         const UploadFolder = process.cwd();
         dirsList.forEach((item, index) => {
-          // dirsList[index] = `<li>${item}</li>`;
+          // const fileinfo = statSync(`.${url}/${item}`);
+          
 
           DynamicHTML += `<li><a href="${url === "/" ? "" : url
             }/${item}"> ${item}</a> <a href="${url === "/" ? "" : url

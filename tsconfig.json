@@ -43,6 +43,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "src/public/**/*"],
+  "include": ["src/**/*", "public/**/*"],
   "exclude": ["node_modules", "dist"]
 }

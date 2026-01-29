@@ -4,10 +4,17 @@
   "type": "module",
   "main": "./dist/server.js",
   "description": "Lightweight HTTP server for local file sharing across your network with QR code access, upload/download capabilities, and smart network detection",
+  "files": [
+    "dist",
+    "!dist/**/*.map",
+    "!dist/**/*.ts",
+    "!dist/**/*.d.ts",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node src/server.js",
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && node -e \"require('fs').cpSync('src/public', 'dist/public', {recursive:true})\"",
+    "build": "tsc",
     "preview": "node dist/server.js"
   },
   "bin": {
