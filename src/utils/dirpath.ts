@@ -1,8 +1,18 @@
 import path from "node:path";
 
 //create absolute path
-export function createApath(...filePaths: string[]) {
+export function createSourceCodeApath(...filePaths: string[]) {
   const dir = path.join(import.meta.dirname, ...filePaths);
+  return dir;
+}
+
+export function createFileExecApath(...filePaths: string[]) {
+  const dir = path.join(process.cwd(), ...filePaths);
+  return dir;
+}
+
+export function normalisePath(...filePaths: string[]) {
+  const dir = path.join("/", ...filePaths);
   return dir;
 }
 

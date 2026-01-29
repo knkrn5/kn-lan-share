@@ -3,7 +3,7 @@ import { open, readdir, readFile } from "node:fs/promises";
 import http from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { mime } from "./utils/mime.js";
-import { createApath } from "./utils/dirpath.js";
+import { createSourceCodeApath, createFileExecApath, normalisePath } from "./utils/dirpath.js";
 import { argsHandler } from "./utils/argshandler.js";
 import { createWriteStream, statSync } from "node:fs";
 const server = http.createServer();
@@ -17,6 +17,7 @@ let addr: string = "0.0.0.0";
 let highwaterMark: number;
 let isUploadAllowed: boolean = false;
 let showQRCode: boolean = false;
+
 
 argsHandler("-p", (portNum) => {
   if (!portNum || isNaN(Number(portNum))) {
@@ -53,12 +54,15 @@ argsHandler("-up", () => {
 server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
   let [url, query] = (req.url || "/").split("?");
   url = decodeURIComponent(url || "/");
+  const nomalisedUrl =  normalisePath(url)
   console.log(url, "and", query);
+  // console.log("normal", normalisePath(url))
+
 
 
   if (req.method === "GET") {
     if (url == "/favicon.ico") {
-      const favicon = await readFile(createApath("../", "../", "public", "favicon.ico"));
+      const favicon = await readFile(createSourceCodeApath("../", "../", "public", "favicon.ico"));
       res.setHeader("Content-Type", "image/x-icon");
       return res.end(favicon);
       //   console.clear();
@@ -70,7 +74,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         res.end(`${scriptFileName} not found`);
         return;
       }
-      const scriptContent = await readFile(createApath("../", "../", "public", scriptFileName));
+      const scriptContent = await readFile(createSourceCodeApath("../", "../", "public", scriptFileName));
       res.setHeader("Content-Type", "text/javascript");
       return res.end(scriptContent);
     } else if (url.startsWith("/_css/")) {
@@ -79,32 +83,32 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         res.end(`${cssFileName} not found`);
         return;
       }
-      const cssContent = await readFile(createApath("../", "../", "public", cssFileName));
+      const cssContent = await readFile(createSourceCodeApath("../", "../", "public", cssFileName));
       res.setHeader("Content-Type", "text/css");
       return res.end(cssContent);
     }
 
     try {
-      const fh = await open(`.${url}`);
+      const fh = await open(`.${nomalisedUrl}`);
       const stat = await fh.stat();
-      const contentType = mime(url);
+      const contentType = mime(nomalisedUrl);
 
       if (stat.isDirectory()) {
-        // console.log(createApath("../", "../", "public", "index.html"))
+        // console.log(createSourceCodeApath("../", "../", "public", "index.html"))
         const htmlContent = await readFile(
-          createApath("../", "../", "public", "index.html"),
+          createSourceCodeApath("../", "../", "public", "index.html"),
         );
-        const dirsList: string[] = await readdir(`.${url}`);
+        const dirsList: string[] = await readdir(`.${nomalisedUrl}`);
         let DynamicHTML = "";
         let DownloadFolder = url;
         const UploadFolder = process.cwd();
         dirsList.forEach((item, index) => {
           // const fileinfo = statSync(`.${url}/${item}`);
-          
 
-          DynamicHTML += `<li><a href="${url === "/" ? "" : url
-            }/${item}"> ${item}</a> <a href="${url === "/" ? "" : url
-            }/${item}?preview" title="Preview"> 👁️</a> <a href="${url === "/" ? "" : url
+
+          DynamicHTML += `<li><a href="${nomalisedUrl === "/" ? "" : nomalisedUrl
+            }/${item}"> ${item}</a> <a href="${nomalisedUrl === "/" ? "" : nomalisedUrl
+            }/${item}?preview" title="Preview"> 👁️</a> <a href="${nomalisedUrl === "/" ? "" : nomalisedUrl
             }/${item}?download" title="Download"> ⬇️</a></li>`;
         });
         if (query === "download") {
