@@ -1,7 +1,6 @@
 # **Future Updates**
 
 > include -h for help menu
-> path traversal vulnerability fix
 
 ## server
 

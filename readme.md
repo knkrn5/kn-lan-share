@@ -81,7 +81,7 @@ kls -a 192.168.1.100
 ### Enable File Uploads
 
 ```bash
-kls -up true
+kls -up
 ```
 
 ### Show QR Code
@@ -98,13 +98,13 @@ kls -p 8080 -up true -qr
 
 ## 🎛️ Command-Line Options
 
-| Flag                | Description                                         | Default | Example                |
-| ------------------- | --------------------------------------------------- | ------- | ---------------------- |
-| `-p <port>`         | Custom port number                                  | 3000    | `kls -p 8080`          |
-| `-a <address>`      | Bind to specific IP address                         | 0.0.0.0 | `kls -a 192.168.1.100` |
-| `-hw <bytes>`       | High water mark for streams (1 to 1073741824 bytes) | Default | `kls -hw 65536`        |
-| `-qr`               | Display QR code in terminal                         | false   | `kls -qr`              |
-| `-up <true\|false>` | Enable/disable file uploads                         | false   | `kls -up true`         |
+| Flag           | Description                                         | Default | Example                |
+| -------------- | --------------------------------------------------- | ------- | ---------------------- |
+| `-p <port>`    | Custom port number                                  | 3000    | `kls -p 8080`          |
+| `-a <address>` | Bind to specific IP address                         | 0.0.0.0 | `kls -a 192.168.1.100` |
+| `-hw <bytes>`  | High water mark for streams (1 to 1073741824 bytes) | Default | `kls -hw 65536`        |
+| `-qr`          | Display QR code in terminal                         | false   | `kls -qr`              |
+| `-up`          | Enable/disable file uploads                         | false   | `kls -up true`         |
 
 ## 🔒 Security Considerations
 
@@ -113,7 +113,7 @@ kls -p 8080 -up true -qr
 By default, file uploads are **disabled** to protect your system from unauthorized file writes. To enable uploads:
 
 ```bash
-kls -up true
+kls -up
 ```
 
 ### Network Exposure
@@ -150,7 +150,7 @@ Scan the QR code with your phone to instantly access files!
 
 ```bash
 # Start on custom port with uploads enabled
-kls -p 3000 -up true
+kls -p 3000 -up
 ```
 
 Share the URL with your team to both download and upload files.
