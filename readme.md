@@ -1,6 +1,6 @@
 # KN-Lan-Share
 
-> A lightweight, feature-rich command-line HTTP server for local file sharing and transfer across your network.
+> A lightweight, feature-rich command-line HTTP server for local file sharing and transfer across your network. Password protected by default.
 
 [![npm version](https://img.shields.io/npm/v/kn-lan-share.svg)](https://www.npmjs.com/package/kn-lan-share)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
@@ -12,7 +12,7 @@
 npm install -g kn-lan-share
 
 # Start the server
-kls
+kls -pwd yourpassword
 ```
 
 That's it! Your file server is now running and accessible from any device on your local network.
@@ -58,7 +58,7 @@ npm start
 
 ```bash
 # Start server on default port (3000)
-kls
+kls -pwd yourpassword
 
 # The server will display:
 # - Server host address
@@ -66,45 +66,62 @@ kls
 # - Access URL for other devices
 ```
 
+### Password Authentication
+
+Password protection is enabled by default and must be configured when starting the server:
+
+```bash
+kls -pwd yourpassword
+```
+
+Use any client browser on your local network, enter the password in the page UI, and the app will include it in file requests automatically.
+
+To explicitly disable password protection:
+
+```bash
+kls -pwd false
+```
+
 ### With Custom Port
 
 ```bash
-kls -p 8080
+kls -pwd yourpassword -p 8080
 ```
 
 ### With Custom IP Binding
 
 ```bash
-kls -a 192.168.1.100
+kls -pwd yourpassword -a 192.168.1.100
 ```
 
 ### Enable File Uploads
 
 ```bash
-kls -up
+kls -pwd yourpassword -up
 ```
 
 ### Show QR Code
 
 ```bash
-kls -qr
+kls -pwd yourpassword -qr
 ```
 
 ### Combined Options
 
 ```bash
-kls -p 8080 -up true -qr
+kls -pwd yourpassword -p 8080 -up -qr
 ```
 
 ## 🎛️ Command-Line Options
 
-| Flag           | Description                                         | Default | Example                |
-| -------------- | --------------------------------------------------- | ------- | ---------------------- |
-| `-p <port>`    | Custom port number                                  | 3000    | `kls -p 8080`          |
-| `-a <address>` | Bind to specific IP address                         | 0.0.0.0 | `kls -a 192.168.1.100` |
-| `-hw <bytes>`  | High water mark for streams (1 to 1073741824 bytes) | Default | `kls -hw 65536`        |
-| `-qr`          | Display QR code in terminal                         | false   | `kls -qr`              |
-| `-up`          | Enable/disable file uploads                         | false   | `kls -up true`         |
+| Flag           | Description                                         | Default  | Example                               |
+| -------------- | --------------------------------------------------- | -------- | ------------------------------------- |
+| `-pwd <value>` | Enable password auth with a password, or disable with `false` | Required | `kls -pwd mysecret` / `kls -pwd false` |
+| `-p <port>`    | Custom port number                                  | 3000     | `kls -pwd mysecret -p 8080`           |
+| `-a <address>` | Bind to specific IP address                         | 0.0.0.0  | `kls -pwd mysecret -a 192.168.1.100`  |
+| `-hw <bytes>`  | High water mark for streams (1 to 1073741824 bytes) | Default  | `kls -pwd mysecret -hw 65536`         |
+| `-qr`          | Display QR code in terminal                         | false    | `kls -pwd mysecret -qr`               |
+| `-up`          | Enable file uploads                                 | false    | `kls -pwd mysecret -up`               |
 
 ## 🔒 Security Considerations
 
@@ -113,7 +130,21 @@ kls -p 8080 -up true -qr
 By default, file uploads are **disabled** to protect your system from unauthorized file writes. To enable uploads:
 
 ```bash
-kls -up
+kls -pwd yourpassword -up
+```
+
+### Password Protection
+
+The server now requires the `-pwd` flag on startup. This protects file access by requiring the browser client to send the configured password with requests.
+
+```bash
+kls -pwd yourpassword
+```
+
+To disable authentication for trusted environments only:
+
+```bash
+kls -pwd false
 ```
 
 ### Network Exposure
@@ -122,15 +153,17 @@ The server binds to `0.0.0.0` by default, making it accessible from any device o
 
 ```bash
 # Bind to localhost only
-kls -a 127.0.0.1
+kls -pwd yourpassword -a 127.0.0.1
 
 # Bind to specific network interface
-kls -a 192.168.1.100
+kls -pwd yourpassword -a 192.168.1.100
 ```
 
 ### Recommended Practices
 
-- Only enable uploads (`-up true`) when you need to receive files
+- Always set a strong password with `-pwd`
+- Only use `-pwd false` on trusted networks
+- Only enable uploads (`-up`) when you need to receive files
 - Use on trusted networks only
 - Monitor the terminal for access logs
 - Stop the server when not in use
@@ -141,16 +174,16 @@ kls -a 192.168.1.100
 
 ```bash
 # Start server with QR code for easy mobile access
-kls -qr
+kls -pwd mysecret -qr
 ```
 
 Scan the QR code with your phone to instantly access files!
 
-### Example 2: Team File Sharing with Uploads
+### Example 2: custom port with Uploads
 
 ```bash
 # Start on custom port with uploads enabled
-kls -p 3000 -up
+kls -pwd mysecret -p 3000 -up
 ```
 
 Share the URL with your team to both download and upload files.
@@ -159,7 +192,7 @@ Share the URL with your team to both download and upload files.
 
 ```bash
 # Start with custom buffer size for large file transfers
-kls -hw 131072
+kls -pwd mysecret -hw 131072
 ```
 
 Adjust the high water mark for optimal performance with large files.
@@ -168,7 +201,7 @@ Adjust the high water mark for optimal performance with large files.
 
 ```bash
 # Bind to localhost only for local testing
-kls -a 127.0.0.1 -p 3000
+kls -pwd mysecret -a 127.0.0.1 -p 3000
 ```
 
 ## 🤝 Contributing
