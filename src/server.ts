@@ -3,8 +3,12 @@ import { open, readdir, readFile } from "node:fs/promises";
 import http from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { mime } from "./utils/mime.js";
-import { createSourceCodeApath, createFileExecApath, normalisePath } from "./utils/dirpath.js";
-import { argsHandler } from "./utils/argshandler.js";
+import {
+  createSourceCodeApath,
+  createFileExecApath,
+  normalisePath,
+} from "./utils/dirpath.js";
+import { argsHandler, argChecker } from "./utils/argshandler.js";
 import { createWriteStream, statSync } from "node:fs";
 const server = http.createServer();
 import { getActiveInterface } from "./utils/nic.js";
@@ -17,7 +21,27 @@ let addr: string = "0.0.0.0";
 let highwaterMark: number;
 let isUploadAllowed: boolean = false;
 let showQRCode: boolean = false;
+let serverPwd: string | null = null;
 
+const serverAuthCheck = argChecker("-pwd");
+if (!serverAuthCheck)
+  throw Error(
+    "Please provide a password after -pwd flag to start the server.",
+  );
+
+argsHandler("-pwd", (pwd) => {
+  if (!pwd) {
+    throw Error("Invalid password after -pwd");
+  }
+
+  if (pwd === "false") {
+    console.log("your server password is disabled");
+    return;
+  }
+
+  serverPwd = pwd;
+  console.log("your server password is", serverPwd);
+});
 
 argsHandler("-p", (portNum) => {
   if (!portNum || isNaN(Number(portNum))) {
@@ -45,24 +69,26 @@ argsHandler("-hw", (hw) => {
 
 argsHandler("-qr", () => {
   showQRCode = true;
-})
+});
 
 argsHandler("-up", () => {
   isUploadAllowed = true;
 });
 
 server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
-  let [url, query] = (req.url || "/").split("?");
+  let [url, query, authpass] = (req.url || "/").split("?");
   url = decodeURIComponent(url || "/");
-  const nomalisedUrl =  normalisePath(url)
+  const nomalisedUrl = normalisePath(url);
   console.log(url, "and", query);
   // console.log("normal", normalisePath(url))
 
-
+  const appPwd: string | undefined = authpass?.split("=").pop();
 
   if (req.method === "GET") {
     if (url == "/favicon.ico") {
-      const favicon = await readFile(createSourceCodeApath("../", "../", "public", "favicon.ico"));
+      const favicon = await readFile(
+        createSourceCodeApath("../", "../", "public", "favicon.ico"),
+      );
       res.setHeader("Content-Type", "image/x-icon");
       return res.end(favicon);
       //   console.clear();
@@ -74,7 +100,9 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         res.end(`${scriptFileName} not found`);
         return;
       }
-      const scriptContent = await readFile(createSourceCodeApath("../", "../", "public", scriptFileName));
+      const scriptContent = await readFile(
+        createSourceCodeApath("../", "../", "public", scriptFileName),
+      );
       res.setHeader("Content-Type", "text/javascript");
       return res.end(scriptContent);
     } else if (url.startsWith("/_css/")) {
@@ -83,9 +111,21 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         res.end(`${cssFileName} not found`);
         return;
       }
-      const cssContent = await readFile(createSourceCodeApath("../", "../", "public", cssFileName));
+      const cssContent = await readFile(
+        createSourceCodeApath("../", "../", "public", cssFileName),
+      );
       res.setHeader("Content-Type", "text/css");
       return res.end(cssContent);
+    }
+
+    //authentication
+    if (serverPwd && url !== "/") {
+      if (serverPwd !== appPwd) {
+        res.statusCode = 401;
+        res.end("Unauthorized");
+        console.log("Unauthorized access attempt");
+        return;
+      }
     }
 
     try {
@@ -105,11 +145,13 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         dirsList.forEach((item, index) => {
           // const fileinfo = statSync(`.${url}/${item}`);
 
-
-          DynamicHTML += `<li><a href="${nomalisedUrl === "/" ? "" : nomalisedUrl
-            }/${item}"> ${item}</a> <a href="${nomalisedUrl === "/" ? "" : nomalisedUrl
-            }/${item}?preview" title="Preview"> 👁️</a> <a href="${nomalisedUrl === "/" ? "" : nomalisedUrl
-            }/${item}?download" title="Download"> ⬇️</a></li>`;
+          DynamicHTML += `<li><a href="${
+            nomalisedUrl === "/" ? "" : nomalisedUrl
+          }/${item}"> ${item}</a> <a href="${
+            nomalisedUrl === "/" ? "" : nomalisedUrl
+          }/${item}?preview" title="Preview "> 👁️</a> <a href="${
+            nomalisedUrl === "/" ? "" : nomalisedUrl
+          }/${item}?download" title="Download" > ⬇️</a></li>`;
         });
         if (query === "download") {
           res.setHeader("content-disposition", "attachment");
@@ -120,7 +162,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
             .toString()
             .replace("${DynamicHTML}", DynamicHTML)
             .replace("${DownloadFolder}", DownloadFolder)
-            .replace("${UploadFolder}", UploadFolder)
+            .replace("${UploadFolder}", UploadFolder),
         );
       } else {
         res.setHeader("Content-Type", `${contentType}`);
@@ -142,7 +184,6 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
       res.end(err.message);
     }
   } else if (req.method === "POST") {
-
     if (req.url === "/upload") {
       if (!isUploadAllowed) {
         res.statusCode = 403;
@@ -158,7 +199,6 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
 
       const ws = createWriteStream(`./${filename}`);
       req.pipe(ws);
-
 
       req.on("data", (chunk) => {
         // console.log("chunk received:", chunk.toString());
@@ -176,11 +216,16 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
     res.statusCode = 405;
     res.end(`${req.method} method not allowed`);
   }
-
 });
 
 server.listen(port, addr, () => {
   console.log(`Server running on Host ${addr}`);
-  console.log(`API listening on http://${activeNICip ? activeNICip.address : addr}:${port}`);
-  if (showQRCode) qrcode.generate(`http://${activeNICip ? activeNICip.address : addr}:${port}`, { small: true });
+  console.log(
+    `API listening on http://${activeNICip ? activeNICip.address : addr}:${port}`,
+  );
+  if (showQRCode)
+    qrcode.generate(
+      `http://${activeNICip ? activeNICip.address : addr}:${port}`,
+      { small: true },
+    );
 });
