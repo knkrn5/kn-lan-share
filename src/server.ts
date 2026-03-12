@@ -26,7 +26,7 @@ let serverPwd: string | null = null;
 const serverAuthCheck = argChecker("-pwd");
 if (!serverAuthCheck)
   throw Error(
-    "Please provide a password after -pwd flag to start the server.",
+    "Please provide a password using -pwd flag to start the server.",
   );
 
 argsHandler("-pwd", (pwd) => {

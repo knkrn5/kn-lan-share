@@ -204,6 +204,11 @@ Adjust the high water mark for optimal performance with large files.
 kls -pwd mysecret -a 127.0.0.1 -p 3000
 ```
 
+# **💻For client**
+1. Client need to enter the password in input given in the top of the page
+2. To view the entered password double tap on the send button
+
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
