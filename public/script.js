@@ -41,7 +41,6 @@ pwdBtn.addEventListener("dblclick", () => {
   console.log("double click");
 });
 
-// let pass = prompt("Enter password to access the files:");
 
 document.querySelectorAll("#dirs a").forEach((a) => {
   a.href = a.href + `?auth=${appPwd}`;
