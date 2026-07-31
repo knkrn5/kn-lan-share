@@ -72,13 +72,19 @@ argsHandler("-up", () => {
 });
 
 server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
-  let [url, query, authpass] = (req.url || "/").split("?");
-  url = decodeURIComponent(url || "/");
+  const parsed = new URL(
+    req.url || "/",
+    `http://${req.headers.host || "localhost"}`,
+  );
+  const url = decodeURIComponent(parsed.pathname || "/");
   const nomalisedUrl = DirPath.normalisePath(url);
+  const query = parsed.searchParams.has("download")
+    ? "download"
+    : parsed.searchParams.has("preview")
+      ? "preview"
+      : undefined;
+  const appPwd = parsed.searchParams.get("auth") ?? undefined;
   console.log(url, "and", query);
-  // console.log("normal", DirPath.normalisePath(url))
-
-  const appPwd: string | undefined = authpass?.split("=").pop();
 
   if (req.method === "GET") {
     if (url == "/favicon.ico") {
@@ -138,14 +144,9 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         let DynamicHTML = "";
         let DownloadFolder = url;
         const UploadFolder = process.cwd();
-        dirsList.forEach((item, index) => {
-          // const fileinfo = statSync(`.${url}/${item}`);
-
-          DynamicHTML += `<li><span>${item}</span> <a href="${
-            nomalisedUrl === "/" ? "" : nomalisedUrl
-          }/${item}?preview" title="Preview "> 👁️</a> <a href="${
-            nomalisedUrl === "/" ? "" : nomalisedUrl
-          }/${item}?download" title="Download" > ⬇️</a></li>`;
+        dirsList.forEach((item) => {
+          const itemPath = `${DirPath.encodeUrlPath(nomalisedUrl)}/${encodeURIComponent(item)}`;
+          DynamicHTML += `<li><span>${item}</span> <a href="${itemPath}?preview" title="Preview"> 👁️</a> <a href="${itemPath}?download" title="Download"> ⬇️</a></li>`;
         });
         if (query === "download") {
           res.setHeader("content-disposition", "attachment");

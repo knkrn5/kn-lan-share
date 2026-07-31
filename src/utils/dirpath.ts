@@ -14,7 +14,15 @@ export class DirPath {
   }
 
   static normalisePath(...filePaths: string[]) {
-    const dir = path.join("/", ...filePaths);
-    return dir;
+    const parts = filePaths.map((p) => p.replace(/\\/g, "/"));
+    return path.posix.join("/", ...parts);
+  }
+
+  static encodeUrlPath(urlPath: string) {
+    if (urlPath === "/") return "";
+    return urlPath
+      .split("/")
+      .map((seg) => (seg ? encodeURIComponent(seg) : ""))
+      .join("/");
   }
 }
