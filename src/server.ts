@@ -146,7 +146,35 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         const UploadFolder = process.cwd();
         dirsList.forEach((item) => {
           const itemPath = `${DirPath.encodeUrlPath(nomalisedUrl)}/${encodeURIComponent(item)}`;
-          DynamicHTML += `<li><span>${item}</span> <a href="${itemPath}?preview" title="Preview"> 👁️</a> <a href="${itemPath}?download" title="Download"> ⬇️</a></li>`;
+          const fsPath = `.${nomalisedUrl === "/" ? "" : nomalisedUrl}/${item}`;
+          const isDir = statSync(fsPath).isDirectory();
+          const ext = !isDir && item.includes(".") ? item.split(".").pop()!.toLowerCase() : "";
+          let iconClass = "is-doc";
+          let iconLabel = ext ? ext.slice(0, 4) : "file";
+          if (isDir) {
+            iconClass = "is-folder";
+            iconLabel = "dir";
+          } else if (["png", "jpg", "jpeg", "gif", "webp", "svg", "ico", "bmp"].includes(ext)) {
+            iconClass = "is-image";
+          } else if (["mp4", "webm", "mkv", "mov", "avi"].includes(ext)) {
+            iconClass = "is-video";
+          } else if (["mp3", "wav", "ogg", "flac", "m4a"].includes(ext)) {
+            iconClass = "is-audio";
+          } else if (["zip", "rar", "7z", "tar", "gz"].includes(ext)) {
+            iconClass = "is-archive";
+          }
+          DynamicHTML += `<li class="file-row">
+            <div class="file-icon ${iconClass}" aria-hidden="true">${iconLabel}</div>
+            <span class="file-name" title="${item}">${item}</span>
+            <div class="file-actions">
+              <a class="action-btn" href="${itemPath}?preview" title="Preview" aria-label="Preview ${item}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+              <a class="action-btn" href="${itemPath}?download" title="Download" aria-label="Download ${item}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+              </a>
+            </div>
+          </li>`;
         });
         if (query === "download") {
           res.setHeader("content-disposition", "attachment");

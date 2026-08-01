@@ -1,4 +1,4 @@
-const pwdInput = document.querySelector("#pwd-container input");
+const pwdInput = document.querySelector("#pwd-input");
 const pwdBtn = document.querySelector("#pwd-container button");
 
 let appPwd = null;

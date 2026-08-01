@@ -4,42 +4,105 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/_css/style.css" />
-    <title>Index</title>
+    <title>KN LAN Share</title>
   </head>
   <body>
-    <!-- All notification -->
-    <p id="notification">notification</p>
+    <div class="bg-glow" aria-hidden="true"></div>
 
-    <!-- password -->
-    <div id="pwd-container">
-      <!-- <h3 id="pwd">Enter Password</h3> -->
-      <input title="password" type="password" />
-      <button type="button" title="Store password">Submit</button>
-    </div>
+    <p id="notification" role="status"></p>
 
-    <!-- File downloads -->
-    <div id="fileDownload">
-      <h1>Files in Directory: - ${DownloadFolder}</h1>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              <polyline points="7 11 12 16 17 11" />
+              <line x1="12" y1="4" x2="12" y2="16" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>KN LAN Share</h1>
+            <p>Secure local file transfer</p>
+          </div>
+        </div>
 
-      <div id="dirs">
-        <ol>
-          ${DynamicHTML}
-        </ol>
-      </div>
-    </div>
+        <div id="pwd-container" class="auth-card">
+          <label class="auth-label" for="pwd-input">Access key</label>
+          <div class="auth-row">
+            <input
+              id="pwd-input"
+              title="password"
+              type="password"
+              placeholder="Enter password"
+              autocomplete="current-password"
+            />
+            <button type="button" title="Store password">Unlock</button>
+          </div>
+        </div>
+      </header>
 
-    <!-- File uploads -->
-    <div id="fileUpload">
-      <h1>Files uploads Path: - ${UploadFolder}</h1>
+      <main class="layout">
+        <section id="fileDownload" class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Browse</p>
+              <h2>Files in directory</h2>
+            </div>
+            <div class="path-chip" title="${DownloadFolder}">
+              <span class="path-dot"></span>
+              <code>${DownloadFolder}</code>
+            </div>
+          </div>
 
-      <input title="upload files" type="file" id="fileInput" />
+          <div id="dirs" class="file-list-wrap">
+            <ol class="file-list">
+              ${DynamicHTML}
+            </ol>
+          </div>
+        </section>
 
-      <button type="button" id="uploadButton">⬆️Upload</button>
+        <section id="fileUpload" class="panel panel-upload">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Transfer</p>
+              <h2>Upload files</h2>
+            </div>
+          </div>
 
-      <div id="progress">
-        <progress id="uploadProgressBar" value="0" max="100"></progress>
-        <p id="progressPercent">0%</p>
-      </div>
+          <p class="upload-path">
+            Saving to
+            <code>${UploadFolder}</code>
+          </p>
+
+          <div class="upload-zone">
+            <input title="upload files" type="file" id="fileInput" />
+            <label for="fileInput" class="upload-drop">
+              <span class="upload-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 16V4" />
+                  <polyline points="7 9 12 4 17 9" />
+                  <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+                </svg>
+              </span>
+              <span class="upload-title">Choose a file to upload</span>
+              <span class="upload-hint">Click to browse from this device</span>
+            </label>
+
+            <button type="button" id="uploadButton" class="btn-primary">
+              Upload
+            </button>
+          </div>
+
+          <div id="progress" class="progress-block">
+            <div class="progress-meta">
+              <span>Progress</span>
+              <p id="progressPercent">0%</p>
+            </div>
+            <progress id="uploadProgressBar" value="0" max="100"></progress>
+          </div>
+        </section>
+      </main>
     </div>
 
     <script src="/_js/script.js" type="module"></script>

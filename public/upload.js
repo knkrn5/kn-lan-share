@@ -4,11 +4,14 @@ const uploadProgressBar = document.getElementById("uploadProgressBar");
 const progressPercent = document.getElementById("progressPercent");
 const notification = document.getElementById("notification");
 
-const url = `http://${window.location.host}`;
+const url = window.location.origin;
+const uploadHint = document.querySelector(".upload-hint");
 
 fileInput.addEventListener("change", async (event) => {
   const file = event.target.files[0];
-  notificationUpdater(`⤴️File to Upload: ${file.name}`, "lightblue", 2000);
+  if (!file) return;
+  if (uploadHint) uploadHint.textContent = file.name;
+  notificationUpdater(`Selected: ${file.name}`, "info", 2000);
 });
 
 uploadButton.addEventListener("click", async () => {
@@ -51,11 +54,11 @@ uploadButton.addEventListener("click", async () => {
   xhr.addEventListener("load", () => {
     try {
       if (xhr.status === 200) {
-        notificationUpdater(xhr.responseText, "lightgreen", 5000);
+        notificationUpdater(xhr.responseText, "success", 5000);
       } else {
         notificationUpdater(
-          `❌${xhr.status} ${xhr.statusText} ${xhr.responseText}`,
-          "lightcoral",
+          `${xhr.status} ${xhr.statusText} ${xhr.responseText}`,
+          "error",
           2000,
         );
       }
@@ -68,11 +71,7 @@ uploadButton.addEventListener("click", async () => {
   });
 
   xhr.addEventListener("error", () => {
-    notificationUpdater(
-      `❌Error Uploading File ${file.name}`,
-      "lightcoral",
-      2000,
-    );
+    notificationUpdater(`Error uploading ${file.name}`, "error", 2000);
     progressUpdater(0);
     cleanupBeforeUnload();
   });
@@ -81,16 +80,18 @@ uploadButton.addEventListener("click", async () => {
   xhr.setRequestHeader("filename", file.name);
 
   xhr.send(file);
-  notificationUpdater(`⬆️Uploading ${file.name}`, "lightblue", 2000);
+  notificationUpdater(`Uploading ${file.name}`, "info", 2000);
 });
 
-function notificationUpdater(msg, color, duration = 2000) {
+function notificationUpdater(msg, tone = "info", duration = 2000) {
+  notification.classList.remove("is-info", "is-success", "is-error");
+  notification.classList.add(`is-${tone}`);
   notification.innerText = msg;
-  notification.style.backgroundColor = color;
   notification.style.display = "block";
   setTimeout(() => {
     notification.style.display = "none";
     notification.innerText = "";
+    notification.classList.remove("is-info", "is-success", "is-error");
   }, duration);
 }
 
