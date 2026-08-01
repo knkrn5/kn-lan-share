@@ -52,8 +52,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.9",
-    "@types/qrcode-terminal": "^0.12.2",
-    "tsx": "^4.21.0"
+    "@types/qrcode-terminal": "^0.12.2"
   },
   "dependencies": {
     "qrcode-terminal": "^0.12.0"
