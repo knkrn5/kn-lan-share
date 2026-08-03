@@ -124,9 +124,19 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
     //authentication
     if (serverPwd && url !== "/") {
       if (serverPwd !== appPwd) {
+        const unauthHtml = await readFile(
+          DirPath.createSourceCodeApath(
+            "../",
+            "../",
+            "public",
+            "unauth",
+            "unauth.html",
+          ),
+        );
         res.statusCode = 401;
-        res.end("Unauthorized");
-        console.log("Unauthorized access attempt");
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        res.end(unauthHtml);
+        console.log("Unauthorized access attempt:", url);
         return;
       }
     }
