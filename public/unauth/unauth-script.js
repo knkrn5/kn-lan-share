@@ -4,6 +4,13 @@ const unlockBtn = document.querySelector("#unlock-btn");
 const statusEl = document.querySelector("#status");
 const card = document.querySelector("#card");
 const reqPath = document.querySelector("#req-path");
+const themeToggle = document.querySelector("#theme-toggle");
+
+themeToggle?.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem("theme", next);
+});
 
 const params = new URLSearchParams(window.location.search);
 

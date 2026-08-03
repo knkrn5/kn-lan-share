@@ -1,8 +1,15 @@
 const pwdInput = document.querySelector("#pwd-input");
 const pwdBtn = document.querySelector("#pwd-container button");
+const themeToggle = document.querySelector("#theme-toggle");
 
 let appPwd = null;
 appPwd = localStorage.getItem("appPwd") || null;
+
+themeToggle?.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem("theme", next);
+});
 
 //button click and double click handling
 let clickTimer = null;
