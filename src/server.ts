@@ -10,6 +10,8 @@ import { createWriteStream } from "node:fs";
 const server = http.createServer();
 import { getActiveInterface } from "./utils/nic.js";
 import qrcode from "qrcode-terminal";
+import { hashData } from "./utils/hasher.js";
+
 
 const activeNICip = await getActiveInterface();
 
@@ -22,9 +24,7 @@ let serverPwd: string | null = null;
 
 const serverAuthCheck = argChecker("-pwd");
 if (!serverAuthCheck)
-  throw Error(
-    "Please provide a password using -pwd flag to start the server.",
-  );
+  throw Error("Please provide a password using -pwd flag to start the server.");
 
 argsHandler("-pwd", (pwd) => {
   if (!pwd) {
@@ -36,8 +36,8 @@ argsHandler("-pwd", (pwd) => {
     return;
   }
 
-  serverPwd = pwd;
-  console.log("your server password is", serverPwd);
+  serverPwd = hashData(pwd);
+  console.log("your server password is", pwd);
 });
 
 argsHandler("-p", (portNum) => {
@@ -228,6 +228,24 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
       req.on("end", () => {
         console.log("Upload complete");
         res.end(`✅File Uploaded: ${filename}`);
+      });
+    } else if (req.url === "/password") {
+      let body = "";
+      req.on("data", (chunk) => {
+        body += chunk;
+      });
+      req.on("end", () => {
+        try {
+          const { password } = JSON.parse(body);
+          const hashedPassword = hashData(password);
+          console.log("received password:", password);
+          console.log("hashed password:", hashedPassword);
+          res.statusCode = 200;
+          res.end(hashedPassword);
+        } catch {
+          res.statusCode = 400;
+          res.end("Invalid JSON body");
+        }
       });
     } else {
       res.statusCode = 404;

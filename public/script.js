@@ -6,7 +6,8 @@ let appPwd = null;
 appPwd = localStorage.getItem("appPwd") || null;
 
 themeToggle?.addEventListener("click", () => {
-  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  const next =
+    document.documentElement.dataset.theme === "light" ? "dark" : "light";
   document.documentElement.dataset.theme = next;
   localStorage.setItem("theme", next);
 });
@@ -26,8 +27,27 @@ pwdBtn.addEventListener("click", () => {
       return;
     }
 
-    appPwd = pwdInput.value.trim();
-    localStorage.setItem("appPwd", appPwd);
+   const enteredPwd = pwdInput.value.trim();
+
+    fetch("/password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password: enteredPwd }),
+    })
+      .then((res) => res.text())
+      .then((data) => {
+        // appPwd = data;
+        localStorage.setItem("appPwd", data);
+
+        // console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    // localStorage.setItem("appPwd", appPwd);
     window.location.reload();
 
     console.log(appPwd);
@@ -47,7 +67,6 @@ pwdBtn.addEventListener("dblclick", () => {
 
   console.log("double click");
 });
-
 
 document.querySelectorAll("#dirs a").forEach((a) => {
   if (!appPwd) return;

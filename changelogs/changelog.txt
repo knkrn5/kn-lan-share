@@ -1,0 +1,5 @@
+CHANGELOG
+
+1. UI has been improve heavily
+2. Support for both light and dark theme
+3. Security increased: -
