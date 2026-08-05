@@ -88,7 +88,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
   console.log(url, "and", query);
 
   if (req.method === "GET") {
-    if (url == "/favicon.ico") {
+    if (url === "/favicon.ico") {
       const favicon = await readFile(
         DirPath.createSourceCodeApath("../", "../", "public", "favicon.ico"),
       );

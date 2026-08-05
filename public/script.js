@@ -47,10 +47,7 @@ pwdBtn.addEventListener("click", () => {
         console.error(err);
       });
 
-    // localStorage.setItem("appPwd", appPwd);
     window.location.reload();
-
-    console.log(appPwd);
   }, 250);
 });
 
@@ -65,7 +62,6 @@ pwdBtn.addEventListener("dblclick", () => {
     pwdInput.type = "password";
   }, 2000);
 
-  console.log("double click");
 });
 
 document.querySelectorAll("#dirs a").forEach((a) => {
