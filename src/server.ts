@@ -257,7 +257,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           console.log("hashed password:", hashedPassword);
           res.setHeader(
             "Set-Cookie",
-            `appPwd=${hashedPassword}; HttpOnly; Secure; SameSite=Strict; Path=/`,
+            `appPwd=${hashedPassword}; HttpOnly; SameSite=Strict; Path=/`,
           );
           res.statusCode = 200;
           res.end(hashedPassword);
