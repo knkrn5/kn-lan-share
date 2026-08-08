@@ -11,7 +11,7 @@ const server = http.createServer();
 import { getActiveInterface } from "./utils/nic.js";
 import qrcode from "qrcode-terminal";
 import { hashData } from "./utils/hasher.js";
-
+import { getCookie } from "./utils/cookieParser.js";
 
 const activeNICip = await getActiveInterface();
 
@@ -84,8 +84,10 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
     : parsed.searchParams.has("preview")
       ? "preview"
       : undefined;
-  const appPwd = parsed.searchParams.get("auth") ?? undefined;
   console.log(url, "and", query);
+
+  const appPwd = getCookie(req, "appPwd");
+  console.log("app password via cookie:", appPwd);
 
   if (req.method === "GET") {
     if (url === "/favicon.ico") {
@@ -240,6 +242,10 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           const hashedPassword = hashData(password);
           console.log("received password:", password);
           console.log("hashed password:", hashedPassword);
+          res.setHeader(
+            "Set-Cookie",
+            `appPwd=${hashedPassword}; HttpOnly; Secure; SameSite=Strict; Path=/`,
+          );
           res.statusCode = 200;
           res.end(hashedPassword);
         } catch {

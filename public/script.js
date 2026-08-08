@@ -64,13 +64,6 @@ pwdBtn.addEventListener("dblclick", () => {
 
 });
 
-document.querySelectorAll("#dirs a").forEach((a) => {
-  if (!appPwd) return;
-  const u = new URL(a.getAttribute("href"), window.location.origin);
-  u.searchParams.set("auth", appPwd);
-  a.href = u.pathname + u.search;
-});
-
 window.onload = () => {
   if (appPwd) {
     pwdInput.value = appPwd;
