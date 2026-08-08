@@ -73,6 +73,11 @@ argsHandler("-up", () => {
 });
 
 server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'",
+  );
+
   const parsed = new URL(
     req.url || "/",
     `http://${req.headers.host || "localhost"}`,
