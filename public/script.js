@@ -1,3 +1,4 @@
+const pwdForm = document.querySelector("#pwd-container");
 const pwdInput = document.querySelector("#pwd-input");
 const pwdBtn = document.querySelector("#pwd-container button");
 const themeToggle = document.querySelector("#theme-toggle");
@@ -15,39 +16,38 @@ themeToggle?.addEventListener("click", () => {
 //button click and double click handling
 let clickTimer = null;
 
-pwdBtn.addEventListener("click", () => {
-  if (clickTimer) clearTimeout(clickTimer);
+function submitPassword() {
+  if (!pwdInput.value) {
+    alert("Password cannot be empty");
+    return;
+  }
 
-  clickTimer = setTimeout(() => {
-    console.log("single click");
-    clickTimer = null;
+  const enteredPwd = pwdInput.value.trim();
 
-    if (!pwdInput.value) {
-      alert("Password cannot be empty");
-      return;
-    }
-
-   const enteredPwd = pwdInput.value.trim();
-
-    fetch("/password", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ password: enteredPwd }),
+  fetch("/password", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password: enteredPwd }),
+  })
+    .then((res) => res.text())
+    .then((data) => {
+      localStorage.setItem("appPwd", data);
     })
-      .then((res) => res.text())
-      .then((data) => {
-        // appPwd = data;
-        localStorage.setItem("appPwd", data);
+    .catch((err) => {
+      console.error(err);
+    });
 
-        // console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  window.location.reload();
+}
 
-    window.location.reload();
+pwdForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (clickTimer) clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => {
+    clickTimer = null;
+    submitPassword();
   }, 250);
 });
 
@@ -61,7 +61,6 @@ pwdBtn.addEventListener("dblclick", () => {
   setTimeout(() => {
     pwdInput.type = "password";
   }, 2000);
-
 });
 
 window.onload = () => {

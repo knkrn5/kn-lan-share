@@ -218,6 +218,11 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         return res.end("File uploads are not allowed on this server.");
       }
 
+      if (serverPwd && serverPwd !== appPwd) {
+        res.statusCode = 401;
+        return res.end("Unauthorized");
+      }
+
       const filename = req.headers.filename;
 
       if (!filename) {
