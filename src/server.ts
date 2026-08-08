@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { open, readdir, readFile } from "node:fs/promises";
+import {mkdirSync} from "node:fs"
 import http from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { mime } from "./utils/mime.js";
@@ -21,6 +22,7 @@ let highwaterMark: number;
 let isUploadAllowed: boolean = false;
 let showQRCode: boolean = false;
 let serverPwd: string | null = null;
+let uploadFolderName: string = "knLanShare";
 
 const serverAuthCheck = argChecker("-pwd");
 if (!serverAuthCheck)
@@ -230,7 +232,8 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         return res.end("Filename is missing.");
       }
 
-      const ws = createWriteStream(`./${filename}`);
+      mkdirSync(uploadFolderName, { recursive: true });
+      const ws = createWriteStream(`./${uploadFolderName}/${filename}`);
       req.pipe(ws);
 
       req.on("data", (chunk) => {
