@@ -196,15 +196,60 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
         );
       } else {
         res.setHeader("Content-Type", `${contentType}`);
+        res.setHeader("Accept-Ranges", "bytes");
         if (query === "download") {
           res.setHeader("content-disposition", "attachment");
           // res.setHeader("filename", "a.txt")
         }
-        res.setHeader("Content-length", `${stat.size}`);
-        const rs = fh.createReadStream({
-          highWaterMark: highwaterMark ? Number(highwaterMark) : undefined,
-        });
-        rs.pipe(res);
+
+        const range = req.headers.range;
+        const total = stat.size;
+
+        if (range) {
+          const match = /bytes=(\d*)-(\d*)/.exec(range);
+          if (!match) {
+            res.statusCode = 416;
+            res.setHeader("Content-Range", `bytes */${total}`);
+            fh.close();
+            return res.end("Invalid Range header");
+          }
+
+          let start = match[1] ? parseInt(match[1], 10) : 0;
+          let end = match[2]
+            ? parseInt(match[2], 10)
+            : total - 1;
+
+          if (isNaN(start) || start >= total) {
+            res.statusCode = 416;
+            res.setHeader("Content-Range", `bytes */${total}`);
+            fh.close();
+            return res.end("Range not satisfiable");
+          }
+          if (isNaN(end) || end >= total) end = total - 1;
+          if (end < start) {
+            res.statusCode = 416;
+            res.setHeader("Content-Range", `bytes */${total}`);
+            fh.close();
+            return res.end("Range not satisfiable");
+          }
+
+          const length = end - start + 1;
+          res.statusCode = 206;
+          res.setHeader("Content-Range", `bytes ${start}-${end}/${total}`);
+          res.setHeader("Content-Length", `${length}`);
+          const rs = fh.createReadStream({
+            start,
+            end,
+            highWaterMark: highwaterMark ? Number(highwaterMark) : undefined,
+          });
+          rs.pipe(res);
+        } else {
+          res.setHeader("Content-Length", `${total}`);
+          const rs = fh.createReadStream({
+            highWaterMark: highwaterMark ? Number(highwaterMark) : undefined,
+          });
+          rs.pipe(res);
+        }
       }
 
       res.on("close", () => {
