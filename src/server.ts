@@ -74,6 +74,31 @@ argsHandler("-up", () => {
   isUploadAllowed = true;
 });
 
+async function renderTemplate(opts: {
+  title: string;
+  headExtras?: string;
+  pageStyles: string;
+  bgGlow: string;
+  content: string;
+  scripts: string;
+}): Promise<string> {
+  const tplPath = DirPath.createSourceCodeApath(
+    "../",
+    "../",
+    "public",
+    "_views",
+    "template.html",
+  );
+  const tpl = (await readFile(tplPath)).toString();
+  return tpl
+    .replace("${title}", opts.title)
+    .replace("${headExtras}", opts.headExtras ?? "")
+    .replace("${pageStyles}", opts.pageStyles)
+    .replace("${bgGlow}", opts.bgGlow)
+    .replace("${scripts}", opts.scripts)
+    .replace("${content}", () => opts.content);
+}
+
 server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
   res.setHeader(
     "Content-Security-Policy",
@@ -133,18 +158,28 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
     //authentication
     if (serverPwd && url !== "/") {
       if (serverPwd !== appPwd) {
-        const unauthHtml = await readFile(
-          DirPath.createSourceCodeApath(
-            "../",
-            "../",
-            "public",
-            "unauth",
-            "unauth.html",
-          ),
-        );
+        const unauthContent = (
+          await readFile(
+            DirPath.createSourceCodeApath(
+              "../",
+              "../",
+              "public",
+              "_views",
+              "unauth.html",
+            ),
+          )
+        ).toString();
+        const html = await renderTemplate({
+          title: "Access Restricted · KN LAN Share",
+          headExtras: `<meta name="robots" content="noindex" />`,
+          pageStyles: `<link rel="stylesheet" href="/_css/unauth/unauth-style.css" />`,
+          bgGlow: `<div class="bg-glow bg-glow-a" aria-hidden="true"></div>\n    <div class="bg-glow bg-glow-b" aria-hidden="true"></div>`,
+          content: unauthContent,
+          scripts: `<script src="/_js/script.js" type="module"></script>\n    <script src="/_js/unauth/unauth-script.js" type="module"></script>`,
+        });
         res.statusCode = 401;
         res.setHeader("Content-Type", "text/html; charset=utf-8");
-        res.end(unauthHtml);
+        res.end(html);
         console.log("Unauthorized access attempt:", url);
         return;
       }
@@ -156,10 +191,17 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
       const contentType = mime(nomalisedUrl);
 
       if (stat.isDirectory()) {
-        // console.log(DirPath.createSourceCodeApath("../", "../", "public", "index.html"))
-        const htmlContent = await readFile(
-          DirPath.createSourceCodeApath("../", "../", "public", "index.html"),
-        );
+        const mainContent = (
+          await readFile(
+            DirPath.createSourceCodeApath(
+              "../",
+              "../",
+              "public",
+              "_views",
+              "main.html",
+            ),
+          )
+        ).toString();
         const dirsList: string[] = await readdir(`.${nomalisedUrl}`);
         let DynamicHTML = "";
         let DownloadFolder = url;
@@ -184,16 +226,21 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
             </div>
           </li>`;
         });
+        const content = mainContent
+          .replace("${DynamicHTML}", () => DynamicHTML)
+          .replace("${DownloadFolder}", () => DownloadFolder)
+          .replace("${UploadFolder}", () => UploadFolder);
+        const html = await renderTemplate({
+          title: "KN LAN Share",
+          pageStyles: `<link rel="stylesheet" href="/_css/style.css" />`,
+          bgGlow: `<div class="bg-glow" aria-hidden="true"></div>`,
+          content,
+          scripts: `<script src="/_js/script.js" type="module"></script>\n    <script src="/_js/upload.js" type="module"></script>`,
+        });
         if (query === "download") {
           res.setHeader("content-disposition", "attachment");
         }
-        res.end(
-          htmlContent
-            .toString()
-            .replace("${DynamicHTML}", DynamicHTML)
-            .replace("${DownloadFolder}", DownloadFolder)
-            .replace("${UploadFolder}", UploadFolder),
-        );
+        res.end(html);
       } else {
         res.setHeader("Content-Type", `${contentType}`);
         res.setHeader("Accept-Ranges", "bytes");

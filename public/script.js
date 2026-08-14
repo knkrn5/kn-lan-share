@@ -1,5 +1,5 @@
 const pwdForm = document.querySelector("#pwd-container");
-const pwdInput = document.querySelector("#pwd-input");
+const pwdInput = document.querySelector("#app-pwd-input");
 const pwdBtn = document.querySelector("#pwd-container button");
 const themeToggle = document.querySelector("#theme-toggle");
 const notification = document.querySelector("#notification");
@@ -48,6 +48,9 @@ function submitPassword() {
     .then((res) => res.text())
     .then((data) => {
       notificationUpdater("Password set successfully", "success", 2500);
+      if (document.querySelector("#req-path")) {
+        setTimeout(() => window.location.reload(), 1200);
+      }
     })
     .catch((err) => {
       console.error(err);

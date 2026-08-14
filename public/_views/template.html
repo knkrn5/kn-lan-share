@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" />
+    <title>${title}</title>
+    ${headExtras}
+    <link rel="stylesheet" href="/_css/shell.css" />
+    ${pageStyles}
+    <script>
+      (() => {
+        if (localStorage.getItem("theme") === "light") {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    ${bgGlow}
+    <p id="notification" role="status"></p>
+
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              <polyline points="7 11 12 16 17 11" />
+              <line x1="12" y1="4" x2="12" y2="16" />
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div>
+              <h1>KN LAN Share</h1>
+              <p>Secure local file transfer</p>
+            </div>
+            <button
+              type="button"
+              id="theme-toggle"
+              class="theme-toggle"
+              title="Toggle theme"
+              aria-label="Toggle theme"
+            >
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+              </svg>
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <form id="pwd-container" class="auth-card">
+          <label class="auth-label" for="app-pwd-input">Access key</label>
+          <div class="auth-row">
+            <input
+              id="app-pwd-input"
+              title="password"
+              type="password"
+              placeholder="Enter password"
+              autocomplete="current-password"
+            />
+            <button type="submit" title="Store password">Unlock</button>
+          </div>
+        </form>
+      </header>
+
+      ${content}
+    </div>
+
+    ${scripts}
+  </body>
+</html>
