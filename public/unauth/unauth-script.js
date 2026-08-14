@@ -5,6 +5,8 @@ const statusEl = document.querySelector("#status");
 const card = document.querySelector("#card");
 const reqPath = document.querySelector("#req-path");
 const themeToggle = document.querySelector("#theme-toggle");
+const notification = document.querySelector("#notification");
+const appPwd = localStorage.getItem("appPwd");
 
 themeToggle?.addEventListener("click", () => {
   const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
@@ -12,7 +14,19 @@ themeToggle?.addEventListener("click", () => {
   localStorage.setItem("theme", next);
 });
 
-let appPwd = localStorage.getItem("appPwd") || null;
+function notificationUpdater(msg, tone = "info", duration = 2000) {
+  if (!notification) return;
+  notification.classList.remove("is-info", "is-success", "is-error");
+  notification.classList.add(`is-${tone}`);
+  notification.innerText = msg;
+  notification.style.display = "block";
+  setTimeout(() => {
+    notification.style.display = "none";
+    notification.innerText = "";
+    notification.classList.remove("is-info", "is-success", "is-error");
+  }, duration);
+}
+
 
 reqPath.textContent = window.location.pathname;
 reqPath.title = window.location.pathname;
@@ -47,8 +61,8 @@ form.addEventListener("submit", (e) => {
       return res.text();
     })
     .then((data) => {
-      localStorage.setItem("appPwd", data);
-      window.location.reload();
+      notificationUpdater("Password set successfully", "success", 1200);
+      setTimeout(() => window.location.reload(), 1200);
     })
     .catch(() => {
       statusEl.textContent = "Invalid access key, please try again.";
