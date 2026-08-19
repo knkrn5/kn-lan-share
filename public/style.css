@@ -262,6 +262,59 @@ body {
   overflow: auto;
 }
 
+.file-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0.75rem 0.65rem 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text-muted);
+}
+
+.file-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.file-search svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+.file-search input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+
+.file-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.file-search-count {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.file-row[hidden] {
+  display: none;
+}
+
+.file-search-empty {
+  margin: 2rem 1rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
 .file-list {
   list-style: none;
   margin: 0;
