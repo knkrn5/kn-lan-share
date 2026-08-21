@@ -349,7 +349,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           console.log("hashed password:", hashedPassword);
           res.setHeader(
             "Set-Cookie",
-            `appPwd=${hashedPassword}; HttpOnly; SameSite=Strict; Path=/`,
+            `appPwd=${hashedPassword}; Max-Age=7200; HttpOnly; SameSite=Strict; Path=/`,
           );
           res.statusCode = 200;
           res.end(hashedPassword);
