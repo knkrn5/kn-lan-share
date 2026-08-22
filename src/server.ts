@@ -232,7 +232,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           .replace("${UploadFolder}", () => UploadFolder);
         const html = await renderTemplate({
           title: "KN LAN Share",
-          pageStyles: `<link rel="stylesheet" href="/_css/style.css" />`,
+          pageStyles: `<link rel="stylesheet" href="/_css/main.css" />`,
           bgGlow: `<div class="bg-glow" aria-hidden="true"></div>`,
           content,
           scripts: `<script src="/_js/main/main.js" type="module"></script>\n   <script src="/_js/main/upload.js" type="module"></script>`,

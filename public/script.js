@@ -4,9 +4,6 @@ const pwdBtn = document.querySelector("#pwd-container button");
 const themeToggle = document.querySelector("#theme-toggle");
 const notification = document.querySelector("#notification");
 
-let appPwd = null;
-// appPwd = localStorage.getItem("appPwd") || null;
-
 themeToggle?.addEventListener("click", () => {
   const next =
     document.documentElement.dataset.theme === "light" ? "dark" : "light";
