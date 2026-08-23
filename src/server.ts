@@ -1,13 +1,12 @@
 #!/usr/bin/env node
 import { open, readdir, readFile } from "node:fs/promises";
-import { mkdirSync } from "node:fs";
+import { mkdirSync, createWriteStream } from "node:fs";
 import http from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { mime } from "./utils/mime.js";
 import { DirPath } from "./utils/dirpath.js";
 import { argsHandler, argChecker } from "./utils/argshandler.js";
 import { getFileIcon } from "./utils/fileicon.js";
-import { createWriteStream } from "node:fs";
 const server = http.createServer();
 import { getActiveInterface } from "./utils/nic.js";
 import qrcode from "qrcode-terminal";
@@ -232,7 +231,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           .replace("${UploadFolder}", () => UploadFolder);
         const html = await renderTemplate({
           title: "KN LAN Share",
-          pageStyles: `<link rel="stylesheet" href="/_css/main.css" />`,
+          pageStyles: `<link rel="stylesheet" href="/_css/main/main.css" />`,
           bgGlow: `<div class="bg-glow" aria-hidden="true"></div>`,
           content,
           scripts: `<script src="/_js/main/main.js" type="module"></script>\n   <script src="/_js/main/upload.js" type="module"></script>`,

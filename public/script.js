@@ -29,7 +29,7 @@ function notificationUpdater(msg, tone = "info", duration = 2000) {
 
 function submitPassword() {
   if (!pwdInput.value) {
-    alert("Password cannot be empty");
+    notificationUpdater("Password cannot be empty", "error", 2500);
     return;
   }
 
@@ -53,7 +53,6 @@ function submitPassword() {
       console.error(err);
       notificationUpdater("Failed to set password", "error", 2500);
     });
-
 }
 
 pwdForm.addEventListener("submit", (e) => {
