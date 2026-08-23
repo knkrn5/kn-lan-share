@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { open, readdir, readFile } from "node:fs/promises";
-import {mkdirSync} from "node:fs"
+import { mkdirSync } from "node:fs";
 import http from "node:http";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { mime } from "./utils/mime.js";
@@ -175,7 +175,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           pageStyles: `<link rel="stylesheet" href="/_css/unauth/unauth-style.css" />`,
           bgGlow: `<div class="bg-glow bg-glow-a" aria-hidden="true"></div>\n    <div class="bg-glow bg-glow-b" aria-hidden="true"></div>`,
           content: unauthContent,
-          scripts: `<script src="/_js/script.js" type="module"></script>\n    <script src="/_js/unauth/unauth-script.js" type="module"></script>`,
+          scripts: `<script src="/_js/unauth/unauth-script.js" type="module"></script>`,
         });
         res.statusCode = 401;
         res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -232,10 +232,10 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           .replace("${UploadFolder}", () => UploadFolder);
         const html = await renderTemplate({
           title: "KN LAN Share",
-          pageStyles: `<link rel="stylesheet" href="/_css/style.css" />`,
+          pageStyles: `<link rel="stylesheet" href="/_css/main.css" />`,
           bgGlow: `<div class="bg-glow" aria-hidden="true"></div>`,
           content,
-          scripts: `<script src="/_js/script.js" type="module"></script>\n    <script src="/_js/upload.js" type="module"></script>`,
+          scripts: `<script src="/_js/main/main.js" type="module"></script>\n   <script src="/_js/main/upload.js" type="module"></script>`,
         });
         if (query === "download") {
           res.setHeader("content-disposition", "attachment");
@@ -262,9 +262,7 @@ server.on("request", async (req: IncomingMessage, res: ServerResponse) => {
           }
 
           let start = match[1] ? parseInt(match[1], 10) : 0;
-          let end = match[2]
-            ? parseInt(match[2], 10)
-            : total - 1;
+          let end = match[2] ? parseInt(match[2], 10) : total - 1;
 
           if (isNaN(start) || start >= total) {
             res.statusCode = 416;

@@ -4,9 +4,6 @@ const pwdBtn = document.querySelector("#pwd-container button");
 const themeToggle = document.querySelector("#theme-toggle");
 const notification = document.querySelector("#notification");
 
-let appPwd = null;
-// appPwd = localStorage.getItem("appPwd") || null;
-
 themeToggle?.addEventListener("click", () => {
   const next =
     document.documentElement.dataset.theme === "light" ? "dark" : "light";
@@ -79,35 +76,3 @@ pwdBtn.addEventListener("dblclick", () => {
     pwdInput.type = "password";
   }, 2000);
 });
-
-const fileSearch = document.querySelector("#fileSearch");
-const fileRows = Array.from(document.querySelectorAll("#dirs .file-row"));
-const fileSearchCount = document.querySelector("#fileSearchCount");
-const fileSearchEmpty = document.querySelector("#fileSearchEmpty");
-
-function filterFiles() {
-  const query = fileSearch.value.trim().toLocaleLowerCase();
-  let visibleCount = 0;
-
-  fileRows.forEach((row) => {
-    const fileName = row.querySelector(".file-name")?.textContent ?? "";
-    const matches = fileName.toLocaleLowerCase().includes(query);
-    row.hidden = !matches;
-    if (matches) visibleCount += 1;
-  });
-
-  if (fileSearchCount) {
-    fileSearchCount.textContent = query
-      ? `${visibleCount} of ${fileRows.length}`
-      : `${fileRows.length} items`;
-  }
-
-  if (fileSearchEmpty) {
-    fileSearchEmpty.hidden = visibleCount !== 0;
-  }
-}
-
-if (fileSearch) {
-  fileSearch.addEventListener("input", filterFiles);
-  filterFiles();
-}
