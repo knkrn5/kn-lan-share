@@ -5,6 +5,13 @@
 [![npm version](https://img.shields.io/npm/v/kn-lan-share.svg)](https://www.npmjs.com/package/kn-lan-share)
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
+## UI Showcase
+
+<p align="center">
+  <img src="https://res.cloudinary.com/dywuvwqth/image/upload/v1787452074/kls-black_cchbi7.png" alt="KLS dark mode UI" width="45%"> &nbsp;&nbsp;&nbsp;
+  <img src="https://res.cloudinary.com/dywuvwqth/image/upload/v1787452074/kls-white_a2mbgk.png" alt="KLS light mode UI" width="45%">
+</p>
+
 ## 🚀 Quick Start
 
 ```bash
@@ -114,14 +121,14 @@ kls -pwd yourpassword -p 8080 -up -qr
 
 ## 🎛️ Command-Line Options
 
-| Flag           | Description                                         | Default  | Example                               |
-| -------------- | --------------------------------------------------- | -------- | ------------------------------------- |
+| Flag           | Description                                                   | Default  | Example                                |
+| -------------- | ------------------------------------------------------------- | -------- | -------------------------------------- |
 | `-pwd <value>` | Enable password auth with a password, or disable with `false` | Required | `kls -pwd mysecret` / `kls -pwd false` |
-| `-p <port>`    | Custom port number                                  | 3000     | `kls -pwd mysecret -p 8080`           |
-| `-a <address>` | Bind to specific IP address                         | 0.0.0.0  | `kls -pwd mysecret -a 192.168.1.100`  |
-| `-hw <bytes>`  | High water mark for streams (1 to 1073741824 bytes) | Default  | `kls -pwd mysecret -hw 65536`         |
-| `-qr`          | Display QR code in terminal                         | false    | `kls -pwd mysecret -qr`               |
-| `-up`          | Enable file uploads                                 | false    | `kls -pwd mysecret -up`               |
+| `-p <port>`    | Custom port number                                            | 3000     | `kls -pwd mysecret -p 8080`            |
+| `-a <address>` | Bind to specific IP address                                   | 0.0.0.0  | `kls -pwd mysecret -a 192.168.1.100`   |
+| `-hw <bytes>`  | High water mark for streams (1 to 1073741824 bytes)           | Default  | `kls -pwd mysecret -hw 65536`          |
+| `-qr`          | Display QR code in terminal                                   | false    | `kls -pwd mysecret -qr`                |
+| `-up`          | Enable file uploads                                           | false    | `kls -pwd mysecret -up`                |
 
 ## 🔒 Security Considerations
 
@@ -205,9 +212,9 @@ kls -pwd mysecret -a 127.0.0.1 -p 3000
 ```
 
 # **💻For client**
+
 1. Client need to enter the password in input given in the top of the page
 2. To view the entered password double tap on the send button
-
 
 ## 🤝 Contributing
 

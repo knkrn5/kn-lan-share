@@ -1,6 +1,6 @@
 {
   "name": "kn-lan-share",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "type": "module",
   "main": "./dist/server.js",
   "description": "Lightweight HTTP server for local file sharing across your network with QR code access, upload/download capabilities, and smart network detection",
